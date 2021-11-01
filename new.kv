@@ -1,0 +1,60 @@
+#:kivy 2.0.0
+
+WindowManager:
+    FirstWindow:
+    SecondWindow:
+
+<FirstWindow>:
+    name: "first"
+
+    BoxLayout:
+        padding: 50
+        spacing: 250
+        orientation: 'vertical'
+
+        Spinner:
+            id: spinner_id
+            pos_hint: {'center_x': 0.5, 'center_y': 0.15}
+            text: 'Выбор бита'
+            values: 'Шурик', 'Биография', 'Чебурашка'
+            on_text:
+                root.spinner_click(spinner_id.text)        
+
+        Button:
+            text: 'И неспеша начну'
+            pos_hint: {'center_x': 0.5, 'center_y': 0.15}
+            on_release:
+                app.root.current = 'second'
+                root.manager.transition.direction = 'left'
+                root.play_song()
+                root.parse()
+
+<SecondWindow>:
+    name: 'second' 
+    button_link: talk
+    padding: 50
+    spacing: 250
+   
+    BoxLayout:
+        padding: 50
+        spacing: 50
+        orientation: 'vertical'
+        
+        Button: 
+            id: talk
+            font_size: 15
+            text: 'Озвучить новость'
+            pos_hint: {'center_x': 0.5, 'y': 0.3}
+            size: 50, 50
+            color: 0,0,0,1
+            background_color: (255,255,255,1)
+            on_release:
+                root.change_title()
+                root.say_title()
+
+        Button:
+            text: 'Пора домой'  
+            on_release:
+                app.root.current = "first" 
+                root.manager.transition.direction = 'right'  
+                root.stop_song()      

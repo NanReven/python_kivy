@@ -3,6 +3,7 @@
 WindowManager:
     FirstWindow:
     SecondWindow:
+    ThirdWindow:
 
 <FirstWindow>:
     name: "first"
@@ -53,8 +54,49 @@ WindowManager:
                 root.say_title()
 
         Button:
+            text: 'Show full title'  
+            on_release:
+                app.root.current = "third" 
+                root.manager.transition.direction = 'left'  
+
+        Button:
             text: 'Пора домой'  
             on_release:
                 app.root.current = "first" 
                 root.manager.transition.direction = 'right'  
-                root.stop_song()      
+                root.stop_song()            
+
+<ThirdWindow>:
+    name: 'third' 
+    label_link: full 
+    padding: 50
+    spacing: 250
+   
+    BoxLayout:
+        padding: 50
+        spacing: 50
+        orientation: 'vertical'
+
+        Label:
+            id: full
+            text_size: self.size
+            halign: 'left'
+            valign: 'middle'               
+            text: 'lol'
+            color: 0,0,0,1
+
+        
+        Button: 
+            font_size: 15
+            text: 'show full'
+            pos_hint: {'center_x': 0.5, 'y': 0.3}
+            size: 50, 50
+            on_release:
+                root.get_full()
+
+        Button:
+            text: 'Back to title'  
+            on_release:
+                app.root.current = "second" 
+                root.manager.transition.direction = 'right'  
+

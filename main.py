@@ -1,3 +1,4 @@
+# ~200 строк vs ~400 в прошлой курсоой
 import pyttsx3
 import requests
 from bs4 import BeautifulSoup
@@ -18,6 +19,7 @@ tts.setProperty("rate", 130)
 
 class FirstWindow(Screen):
     news = []
+    news_full = []
     song = SoundLoader.load('Шурик.mp3')
     song_code = 0
     song_name = ''
@@ -32,9 +34,10 @@ class FirstWindow(Screen):
             self.song_code = 3   
 
     def play_song(self):
-        self.song = SoundLoader.load(self.song_name)
-        self.song.volume = 0.45
-        self.song.play()   
+        if self.song_code != 0:
+            self.song = SoundLoader.load(self.song_name)
+            self.song.volume = 0.45
+            self.song.play()   
 
     def parse(self):
         url = 'http://breakingmad.me/ru/'
@@ -44,16 +47,20 @@ class FirstWindow(Screen):
         name_category = soup.find(class_="container")
         children = name_category.findChildren("h2")
         for child in children:
-            title = str(child)
-            self.news.append(title[4 : len(title) - 5])        
+            self.news.append(child.text.strip())  
 
+        full = name_category.findChildren('div', class_='news-full-forspecial')
+        for child in full:
+            self.news_full.append(child.text.strip())      
 
 class SecondWindow(Screen):
     count = 0
 
     def change_title(self):
-        if self.count > 11:
+        if self.count > 10:
             self.count = 0
+            self.button_link.text = FirstWindow().news[self.count]
+            self.count += 1
         else:    
             button_link = ObjectProperty()    
             self.button_link.text = FirstWindow().news[self.count]
@@ -68,6 +75,17 @@ class SecondWindow(Screen):
     def stop_song(self):
         FirstWindow().song.stop()     
         FirstWindow().song.unload()   
+
+    def show_full(self):
+        ThirdWindow().label_link.text = FirstWindow().news_full[self.count]    
+
+class ThirdWindow(Screen):
+    full_news = FirstWindow.news_full
+
+    def get_full(self):
+        label_link = ObjectProperty()
+        num = SecondWindow().count
+        self.label_link.text = self.full_news[num]
 
 class WindowManager(ScreenManager):
     pass
